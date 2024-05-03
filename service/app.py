@@ -42,11 +42,12 @@ def get_real_result():
     res = predict_image(request.files["media"])
 
     client = hvac.Client(
-         url='http://host.docker.internal:8200',
+         url='http://127.0.0.1:8200',
          token='hvsvio2dl8SxHJU83uFk8O8JGGE',
      )
 
     client.is_authenticated()
+    print("AUTH: ", client.is_authenticated())
 
     read_response = client.secrets.kv.read_secret_version(path='server')
 
