@@ -16,7 +16,7 @@ services:
    image: redis/redis-stack:latest
 
   
-   command: redis-server --requirepass ${PASS}  --protected-mode yes
+   command: redis-server --requirepass 'test'  --protected-mode yes
 
    ports:
       - '6379:6379'
