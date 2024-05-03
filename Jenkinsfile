@@ -17,7 +17,7 @@ pipeline {
       agent any
       steps {
         sh 'docker compose up --build -d'
-        sh 'python3 init_vault.py'
+        sh 'python3 init_vault.py --vault_addr "http://127.0.0.1:8200" --port 6379 --token "hvsvio2dl8SxHJU83uFk8O8JGGE"'
       }
     }
     stage('Deployment: test stage 2') {
