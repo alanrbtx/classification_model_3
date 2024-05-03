@@ -24,7 +24,7 @@ pipeline {
       steps {
         sh 'python3 init_vault.py'
         sh 'python3 tests/test_api.py'
-        sh 'docker stop $(docker ps -a -q)'
+        //sh 'docker stop $(docker ps -a -q)'
       }
     }
   }
