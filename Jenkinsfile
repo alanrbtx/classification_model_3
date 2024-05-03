@@ -16,7 +16,7 @@ pipeline {
     stage('Deployment: test stage 1') {
       agent any
       steps {
-        sh 'docker compose up --build -d'
+        sh 'docker compose up --build'
 //        sh 'python3 init_vault.py'
       }
     }
