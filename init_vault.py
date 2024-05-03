@@ -15,4 +15,3 @@ create_response = client.secrets.kv.v2.create_or_update_secret(
                      PORT=6379,
                      VAULT_ADDR='http://127.0.0.1:8200'),
 )
-

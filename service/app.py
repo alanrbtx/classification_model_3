@@ -54,6 +54,8 @@ def get_real_result():
     host=read_response['data']['data']['HOST']
     port=read_response['data']['data']['PORT']
 
+    print(password, host, port)
+    
     r = redis.Redis(host=host,
                     port=port,
                     db=0,
