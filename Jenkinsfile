@@ -16,15 +16,15 @@ pipeline {
     stage('Deployment: test stage 1') {
       agent any
       steps {
-        sh 'docker compose up --build'
-//        sh 'python3 init_vault.py'
+        sh 'docker compose up --build -d'
+        sh 'python3 init_vault.py'
       }
     }
     stage('Deployment: test stage 2') {
       agent any
       steps {
         sh 'python3 tests/test_api.py'
- //       sh 'docker stop $(docker ps -a -q)'
+        sh 'docker stop $(docker ps -a -q)'
       }
     }
   }
