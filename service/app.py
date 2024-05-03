@@ -42,7 +42,7 @@ def get_real_result():
     res = predict_image(request.files["media"])
 
     client = hvac.Client(
-         url='http://127.0.0.1:8200',
+         url='http://host.docker.internal:8200',
          token='hvsvio2dl8SxHJU83uFk8O8JGGE',
      )
 
