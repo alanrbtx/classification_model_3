@@ -29,10 +29,10 @@ services:
       - "8201:8201"
       - "8200:8200"
     environment:
-      VAULT_ADDR: '${VAULT_ADDR}'
+      VAULT_ADDR: 'http://127.0.0.1:8200'
       VAULT_LOCAL_CONFIG: '{"listener": [{"tcp":{"address": "127.0.0.1:8201","tls_disable":"1"}}], "default_lease_ttl": "168h", "max_lease_ttl": "720h"}, "ui": true}'
     cap_add:
       - IPC_LOCK
     healthcheck:
       retries: 1
-    command: server -dev -dev-root-token-id='hvsvio2dl8SxHJU83uFk8O8JGGE'
+    command: server -dev -dev-root-token-id='hvsvio2dl8SxHJU83uFk8O8JGGE' 

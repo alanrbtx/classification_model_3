@@ -7,6 +7,7 @@ import redis
 import os
 import os
 from dotenv import load_dotenv
+import hvac
 
 pkl_path = '/classification/neigh.pkl'
 def load_pickle(file_path):
@@ -40,11 +41,19 @@ def get_test_result():
 def get_real_result():
     res = predict_image(request.files["media"])
 
-    load_dotenv()
+    client = hvac.Client(
+         url='http://127.0.0.1:8200',
+         token='hvsvio2dl8SxHJU83uFk8O8JGGE',
+     )
 
-    password = os.getenv('PASS')
-    host = os.getenv('HOST')
-    port = os.getenv('PORT')
+    client.is_authenticated()
+
+    read_response = client.secrets.kv.read_secret_version(path='server')
+
+    password=read_response['data']['data']['PASS']
+    host=read_response['data']['data']['HOST']
+    port=read_response['data']['data']['PORT']
+
     r = redis.Redis(host=host,
                     port=port,
                     db=0,
