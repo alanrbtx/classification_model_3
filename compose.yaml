@@ -6,8 +6,8 @@ services:
       - '8000:8000'
 
     volumes:
-      - /Users/a.gazzaev/Desktop/BIG-DATA/lab1/classification_model/experiments/exp_25177033897488245161:/classification
-      - /Users/a.gazzaev/Desktop/BIG-DATA/lab1/classification_model/data:/dataset
+       - ${HOST_EXPERIMENTS_PATH}:/classification
+       - ${HOST_DATA_PATH}:/data
 
     extra_hosts:
       - host.docker.internal:host-gateway
