@@ -3,10 +3,11 @@ import pickle
 from skimage import io
 from skimage.transform import resize
 from skimage.color import rgb2gray
-import redis
-import os
-import os
+import logging
 from dotenv import load_dotenv
+import os
+import redis
+from db import Database
 import hvac
 import argparse
 
@@ -14,9 +15,17 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--token", default="none")
 parser.add_argument("--vault_addr", default="none")
 
+load_dotenv()
+
+host_model = os.getenv("HOST_EXPERIMENTS_PATH")
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 pkl_path = '/classification/neigh.pkl'
 def load_pickle(file_path):
     neigh = pickle.load(open(file_path, 'rb'))
+    logger.info("Модель успешно загружена из %s", file_path)
     return neigh
 
 def predict_image(file_path):
@@ -30,16 +39,18 @@ def predict_image(file_path):
     res = neigh.predict(image)[0]
     if res == 0:
         print("MODEL PREDICTION: CAT")
+        logger.info("Модель предсказала CAT")
         return {"result": "cat"}
     else:
         print("MODEL PREDICTION: DOG")
+        logger.info("Модель предсказала DOG")
         return {"result": "dog"}
 
 app = Flask(__name__)
 
 @app.route('/get_test_prediction', methods=['GET'])
 def get_test_result():
-    res = predict_image("/dataset/PetImages/Cat/3004.jpg")
+    res = predict_image("../data/PetImages/Cat/3004.jpg")
     return res
 
 @app.route('/get_real_prediction', methods=['POST'])
@@ -47,12 +58,11 @@ def get_real_result():
     res = predict_image(request.files["media"])
 
     namespace = parser.parse_args()
-
-
     client = hvac.Client(
             url=namespace.vault_addr,
             token=namespace.token,
     )
+
     client.is_authenticated()
     print("AUTH: ", client.is_authenticated())
 
@@ -61,28 +71,15 @@ def get_real_result():
     password=read_response['data']['data']['PASS']
     host=read_response['data']['data']['HOST']
     port=read_response['data']['data']['PORT']
-    
-    r = redis.Redis(host=host,
-                    port=port,
-                    db=0,
-                    password=password)
-    
-    r.set(request.remote_addr, f"prediction: {res}")
 
-    keys = r.keys()
-    for key in keys:
-        print(f"key: {key}", f"value: {r.get(key)}")
-        print(10*"---")
-
+    db = Database(password, host, port)
+    db.connect(res, request)
+        
     return res
-
 
 class TestClass():
     def test_load_picke(self):
-        assert load_pickle('/classification/neigh.pkl')
-
-    def test_predict(self):
-        assert predict_image('/dataset/PetImages/Cat/3004.jpg')
+        assert load_pickle(f'{host_model}/neigh.pkl')
 
     
 if __name__ == '__main__':
