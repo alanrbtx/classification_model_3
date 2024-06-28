@@ -4,14 +4,14 @@ from skimage.transform import resize
 from skimage.color import rgb2gray
 
 
-pkl_path = '../experiments/exp_404132797168783618/neigh.pkl'
+pkl_path = '../experiments/neigh.pkl'
 def load_pickle(file_path):
     neigh = pickle.load(open(file_path, 'rb'))
     return neigh
 
 # pytest
 def test_load_picke():
-    assert load_pickle('../experiments/exp_404132797168783618/neigh.pkl')
+    assert load_pickle('../experiments/neigh.pkl')
 
 def predict_image(file_path):
     image = io.imread(file_path)

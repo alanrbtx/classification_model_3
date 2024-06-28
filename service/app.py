@@ -8,6 +8,11 @@ import os
 import os
 from dotenv import load_dotenv
 import hvac
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--token", default="none")
+parser.add_argument("--vault_addr", default="none")
 
 pkl_path = '/classification/neigh.pkl'
 def load_pickle(file_path):
@@ -41,11 +46,13 @@ def get_test_result():
 def get_real_result():
     res = predict_image(request.files["media"])
 
-    client = hvac.Client(
-         url='http://host.docker.internal:8200',
-         token='hvsvio2dl8SxHJU83uFk8O8JGGE',
-     )
+    namespace = parser.parse_args()
 
+
+    client = hvac.Client(
+            url=namespace.vault_addr,
+            token=namespace.token,
+    )
     client.is_authenticated()
     print("AUTH: ", client.is_authenticated())
 
