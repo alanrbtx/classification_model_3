@@ -10,6 +10,7 @@ import redis
 from db import Database
 import hvac
 import argparse
+from vault import Vault
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--token", default="none")
@@ -58,15 +59,9 @@ def get_real_result():
     res = predict_image(request.files["media"])
 
     namespace = parser.parse_args()
-    client = hvac.Client(
-            url=namespace.vault_addr,
-            token=namespace.token,
-    )
 
-    client.is_authenticated()
-    print("AUTH: ", client.is_authenticated())
-
-    read_response = client.secrets.kv.read_secret_version(path='server')
+    vault = Vault(namespace.vault_addr, namespace.token)
+    read_response = vault.get_secrets()
 
     password=read_response['data']['data']['PASS']
     host=read_response['data']['data']['HOST']
